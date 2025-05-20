@@ -1,0 +1,44 @@
+.game-controls {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+#join-game-button {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+    font-weight: bold;
+    padding: 0.75rem 2rem;
+    min-width: 150px;
+    transition: all 0.3s ease;
+}
+
+#join-game-button:hover:not(:disabled) {
+    background-color: #27ae60;
+    box-shadow: 0 4px 8px rgba(39, 174, 96, 0.2);
+    transform: translateY(-2px);
+}
+
+#join-game-button.hidden {
+    display: none;
+}
+
+#back-to-lobby-button {
+    min-width: 150px;
+}
+
+/* Make spinner visible inside buttons */
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}

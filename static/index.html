@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BitTacToe - Modern Multiplayer Tic-Tac-Toe</title>
+    <meta name="description" content="A scalable multiplayer tic-tac-toe game with beautiful interface and real-time gameplay">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/cell-styles.css">
+    <link rel="stylesheet" href="/css/button-fix.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Debug Mode Toggle (Hidden in Production) -->
+        <div class="debug-toggle">
+            <label>
+                <input type="checkbox" id="debug-mode" checked> Debug Mode
+            </label>
+        </div>
+        
+        <!-- Welcome Screen -->
+        <div id="welcome-view" class="animate-fade-in">
+            <div class="header">
+                <h1>BitTacToe</h1>
+                <p>Modern Multiplayer Tic-Tac-Toe</p>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">Welcome to BitTacToe!</h2>
+                <p class="mb-3">Enter your username to start playing with friends around the world.</p>
+                
+                <div class="form-group">
+                    <label for="username-input" class="form-label">Your Username</label>
+                    <input type="text" id="username-input" class="form-control" placeholder="Enter your username" maxlength="20" autofocus>
+                </div>
+                
+                <button id="start-button" class="btn btn-primary btn-block">Start Playing</button>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">How to Play</h2>
+                <div class="text-center mb-3">
+                    <i class="fas fa-gamepad" style="font-size: 3rem; color: var(--primary-color);"></i>
+                </div>
+                <p>BitTacToe is a modern take on the classic tic-tac-toe game with real-time multiplayer capabilities.</p>
+                <ul class="mt-2">
+                    <li>Create a new game or join an existing one</li>
+                    <li>Take turns placing X's and O's on the 3x3 grid</li>
+                    <li>Get three of your symbols in a row to win</li>
+                    <li>Play with friends by sharing your game ID</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Game Lobby -->
+        <div id="lobby-view" class="hidden animate-fade-in">
+            <div class="header">
+                <h1>BitTacToe</h1>
+                <p>Game Lobby</p>
+            </div>
+            
+            <div class="section">
+                <div class="profile-section">
+                    <div class="avatar" id="player-avatar"></div>
+                    <div class="profile-info">
+                        <div class="username-display" id="player-display">Player</div>
+                        <div class="player-id">ID: <span class="id-value"></span></div>
+                    </div>
+                </div>
+                
+                <div class="btn-group">
+                    <button id="create-game-button" class="btn btn-primary">Create New Game</button>
+                    <button id="refresh-games-button" class="btn btn-outline">
+                        <i class="fas fa-sync-alt"></i> Refresh Games
+                    </button>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">Active Games</h2>
+                <div id="games-container" class="game-list">
+                    <!-- Games will be populated here -->
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Game Screen -->
+        <div id="game-view" class="hidden animate-fade-in">
+            <div class="header">
+                <h1>BitTacToe</h1>
+                <p>Game in Progress</p>
+            </div>
+            
+            <div class="section game-container">
+                <div class="game-header mb-2">
+                    <div class="game-header-info">
+                        <div class="tooltip">
+                            Game ID: <span id="game-id"></span>
+                            <button id="game-copy-button" class="copy-btn tooltip">
+                                <i class="fas fa-copy"></i>
+                                <span class="tooltip-text">Copy Game ID</span>
+                            </button>
+                        </div>
+                        <div id="game-status" class="game-status">Waiting</div>
+                    </div>
+                </div>
+                
+                <div class="game-info mb-3">
+                    <div class="players">
+                        <div id="player-x" class="player player-x">
+                            <div class="player-icon">X</div>
+                            <div id="player-x-name" class="player-name">Waiting...</div>
+                        </div>
+                        <div id="player-o" class="player player-o">
+                            <div class="player-icon">O</div>
+                            <div id="player-o-name" class="player-name">Waiting...</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="game-board" id="game-board">
+                    <div class="cell" data-position="0"><div class="content"></div></div>
+                    <div class="cell" data-position="1"><div class="content"></div></div>
+                    <div class="cell" data-position="2"><div class="content"></div></div>
+                    <div class="cell" data-position="3"><div class="content"></div></div>
+                    <div class="cell" data-position="4"><div class="content"></div></div>
+                    <div class="cell" data-position="5"><div class="content"></div></div>
+                    <div class="cell" data-position="6"><div class="content"></div></div>
+                    <div class="cell" data-position="7"><div class="content"></div></div>
+                    <div class="cell" data-position="8"><div class="content"></div></div>
+                </div>
+                
+                <div class="game-controls mt-3">
+                    <button id="join-game-button" class="btn btn-success">Join Game</button>
+                    <button id="back-to-lobby-button" class="btn btn-outline">Back to Lobby</button>
+                </div>
+                
+                <div id="game-result" class="game-result hidden">
+                    <!-- Game result will be shown here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Debug Console (Hidden in Production) -->
+    <div id="debug-console">
+        <div class="debug-header">
+            <h3>Debug Console</h3>
+            <button id="clear-debug">Clear</button>
+        </div>
+        <div id="debug-output"></div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="/js/game.js"></script>
+    
+    <!-- Debug Mode Script -->
+    <script>
+        // Add debug mode functionality
+        document.getElementById('debug-mode').addEventListener('change', function(e) {
+            if (this.checked) {
+                document.body.classList.add('debug');
+                document.getElementById('debug-console').classList.remove('hidden');
+            } else {
+                document.body.classList.remove('debug');
+                document.getElementById('debug-console').classList.add('hidden');
+            }
+        });
+        
+        // Initialize debug mode if checkbox is checked
+        if (document.getElementById('debug-mode').checked) {
+            document.body.classList.add('debug');
+            document.getElementById('debug-console').classList.remove('hidden');
+        }
+        
+        document.getElementById('clear-debug').addEventListener('click', function() {
+            document.getElementById('debug-output').innerHTML = '';
+        });
+        
+        // Override console.log for debug output
+        const originalConsoleLog = console.log;
+        console.log = function() {
+            // Call original console.log
+            originalConsoleLog.apply(console, arguments);
+            
+            // Add to debug output
+            const debugOutput = document.getElementById('debug-output');
+            if (debugOutput) {
+                const logItem = document.createElement('div');
+                logItem.className = 'log-item';
+                const args = Array.from(arguments).map(arg => {
+                    if (typeof arg === 'object') {
+                        return JSON.stringify(arg, null, 2);
+                    }
+                    return arg;
+                }).join(' ');
+                logItem.textContent = `${new Date().toISOString().slice(11, 19)} - ${args}`;
+                debugOutput.appendChild(logItem);
+                debugOutput.scrollTop = debugOutput.scrollHeight;
+            }
+        };
+        
+        // Override console.error for debug output with error styling
+        const originalConsoleError = console.error;
+        console.error = function() {
+            // Call original console.error
+            originalConsoleError.apply(console, arguments);
+            
+            // Add to debug output with error styling
+            const debugOutput = document.getElementById('debug-output');
+            if (debugOutput) {
+                const logItem = document.createElement('div');
+                logItem.className = 'log-item error';
+                const args = Array.from(arguments).map(arg => {
+                    if (typeof arg === 'object') {
+                        return JSON.stringify(arg, null, 2);
+                    }
+                    return arg;
+                }).join(' ');
+                logItem.textContent = `${new Date().toISOString().slice(11, 19)} - ERROR: ${args}`;
+                debugOutput.appendChild(logItem);
+                debugOutput.scrollTop = debugOutput.scrollHeight;
+            }
+        };
+    </script>
+    
+    <!-- Style for debug console -->
+    <style>
+        .debug-toggle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+        
+        #debug-console {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            font-family: monospace;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .debug-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            background: #222;
+            border-bottom: 1px solid #444;
+        }
+        
+        .debug-header h3 {
+            margin: 0;
+            font-size: 14px;
+        }
+        
+        #clear-debug {
+            background: #444;
+            border: none;
+            color: #fff;
+            padding: 2px 8px;
+            cursor: pointer;
+        }
+        
+        #debug-output {
+            flex: 1;
+            overflow-y: auto;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        
+        .log-item {
+            margin: 2px 0;
+            word-break: break-all;
+            white-space: pre-wrap;
+        }
+        
+        .log-item.error {
+            color: #ff6b6b;
+        }
+        
+        /* Fixed button styles */
+        .game-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        /* Make sure elements are visible for debugging */
+        .debug .hidden:not(#join-game-button) {
+            display: block !important;
+            opacity: 0.5;
+            border: 1px dashed red;
+        }
+    </style>
+</body>
+</html>

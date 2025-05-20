@@ -1,0 +1,41 @@
+/* Ensure join button is always visible and properly styled */
+#join-game-button {
+    display: block;
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 0 auto;
+}
+
+#join-game-button:hover:not(:disabled) {
+    background-color: #27ae60;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#join-game-button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+#join-game-button:disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
+}
+
+/* Fix for hidden class - make sure it works correctly */
+#join-game-button.hidden {
+    display: none !important;
+}
+
+/* Ensure game controls are properly displayed */
+.game-controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 15px;
+}
